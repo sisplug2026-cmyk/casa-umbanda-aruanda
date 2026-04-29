@@ -12,25 +12,30 @@ export const metadata: Metadata = {
 async function getRifas() {
   const url = "https://dkgsuvstitomsaanemwy.supabase.co";
   const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRrZ3N1dnN0aXRvbXNhYW5lbXd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NzQxNDEsImV4cCI6MjA5MzA1MDE0MX0.ADMamefc5G7u3eBVJseTRXO1W-0dhLnlv3MHZyhTBxg";
-  
-  const res = await fetch(`${url}/rest/v1/rifas?status=in.(active,closed)&order=created_at.desc`, {
-    headers: {
-      "apikey": key,
-      "Authorization": `Bearer ${key}`,
-    },
-    next: { revalidate: 60 },
-  });
-  
-  if (!res.ok) {
-    console.error("Error fetching rifas:", res.status);
-    return [];
+
+  try {
+    const res = await fetch(`${url}/rest/v1/rifas?status=in.(active,closed)&order=created_at.desc`, {
+      headers: {
+        "apikey": key,
+        "Authorization": `Bearer ${key}`,
+      },
+      next: { revalidate: 60 },
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      return { rifas: [], error: `Erro ${res.status}: ${errorText}` };
+    }
+
+    const data = await res.json();
+    return { rifas: data, error: null };
+  } catch (e: any) {
+    return { rifas: [], error: e.message };
   }
-  
-  return res.json();
 }
 
 export default async function RifasPage() {
-  const rifas = await getRifas();
+  const { rifas, error } = await getRifas();
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -46,6 +51,12 @@ export default async function RifasPage() {
         </p>
         <div className="mt-6 h-1 w-24 bg-gradient-to-r from-[#4a7c59] to-[#8b5e3c] rounded mx-auto" />
       </header>
+
+      {error && (
+        <div className="text-center py-4 text-red-600 text-sm mb-4">
+          Erro: {error}
+        </div>
+      )}
 
       {rifas.length === 0 ? (
         <div className="text-center py-20 text-[#8b5e3c]">
