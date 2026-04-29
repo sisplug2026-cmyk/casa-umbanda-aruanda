@@ -35,7 +35,7 @@ export default async function RifasPage() {
           Sorteios
         </p>
         <h1 className="font-serif text-5xl sm:text-6xl font-bold text-[#2c1810] mb-4">
-          Rifas
+          Rifas 2025
         </h1>
         <p className="text-[#6b4c3b] text-lg">
           Participe, colabore com a casa e concorra a prêmios especiais
