@@ -1,15 +1,25 @@
 import type { Metadata } from "next";
+import { criarDownload } from "./actions";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = { title: "Admin — Novo Download" };
 
 export default function NovoDownloadPage() {
+  async function handleSubmit(formData: FormData) {
+    "use server";
+    const result = await criarDownload(formData);
+    if (result.success) {
+      redirect("/admin/downloads");
+    }
+  }
+
   return (
     <div>
       <h1 className="font-serif text-3xl font-bold text-[#2c1810] mb-6">
         Novo Arquivo para Download
       </h1>
       <div className="bg-[#fdfaf5] rounded-2xl border border-[#8b5e3c]/10 p-6">
-        <form className="space-y-5 max-w-lg">
+        <form action={handleSubmit} className="space-y-5 max-w-lg">
           <div>
             <label className="block text-sm font-medium text-[#2c1810] mb-1">
               Título
@@ -63,17 +73,17 @@ export default function NovoDownloadPage() {
 
           <div>
             <label className="block text-sm font-medium text-[#2c1810] mb-1">
-              Arquivo
+              URL do arquivo (Supabase Storage)
             </label>
             <input
-              type="file"
-              name="file"
-              accept=".pdf,.mp3,.mp4,.wav,.ogg,.m4a"
+              type="url"
+              name="file_url"
+              placeholder="https://..."
               required
-              className="w-full px-4 py-2.5 rounded-xl border border-[#8b5e3c]/20 bg-white text-[#2c1810] focus:outline-none focus:ring-2 focus:ring-[#4a7c59]/40 transition file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-[#4a7c59]/15 file:text-[#4a7c59] file:font-medium file:text-sm"
+              className="w-full px-4 py-2.5 rounded-xl border border-[#8b5e3c]/20 bg-white text-[#2c1810] focus:outline-none focus:ring-2 focus:ring-[#4a7c59]/40 transition"
             />
             <p className="text-xs text-[#8b5e3c] mt-1">
-              Aceita PDF, MP3, MP4. Máximo 500 MB.
+              Faça upload do arquivo no Supabase Storage e cole a URL aqui.
             </p>
           </div>
 
@@ -81,7 +91,7 @@ export default function NovoDownloadPage() {
             type="submit"
             className="px-6 py-2.5 bg-gradient-to-r from-[#4a7c59] to-[#2d5c3a] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
           >
-            Fazer upload
+            Salvar download
           </button>
         </form>
       </div>

@@ -1,15 +1,25 @@
 import type { Metadata } from "next";
+import { criarPost } from "./actions";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = { title: "Admin — Novo Post" };
 
 export default function NovoBlogPage() {
+  async function handleSubmit(formData: FormData) {
+    "use server";
+    const result = await criarPost(formData);
+    if (result.success) {
+      redirect("/admin/blog");
+    }
+  }
+
   return (
     <div>
       <h1 className="font-serif text-3xl font-bold text-[#2c1810] mb-6">
         Novo Post
       </h1>
       <div className="bg-[#fdfaf5] rounded-2xl border border-[#8b5e3c]/10 p-6">
-        <form className="space-y-5">
+        <form action={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-[#2c1810] mb-1">
               Título
