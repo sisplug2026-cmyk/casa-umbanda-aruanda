@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -60,6 +60,16 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            {!loading && profile?.role === "admin" && (
+              <Link
+                href="/admin/dashboard"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#8b5e3c] hover:text-[#4a7c59] hover:bg-[#4a7c59]/10 rounded-lg transition-colors"
+                title="Painel Admin"
+              >
+                <Shield size={15} />
+                <span>Admin</span>
+              </Link>
+            )}
           </nav>
 
           {/* CTA + Mobile Toggle */}
@@ -122,6 +132,16 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          {!loading && profile?.role === "admin" && (
+            <Link
+              href="/admin/dashboard"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#8b5e3c] hover:text-[#4a7c59] hover:bg-[#4a7c59]/10 rounded-lg transition-colors"
+            >
+              <Shield size={15} />
+              <span>Admin</span>
+            </Link>
+          )}
           {!loading && (
             user ? (
               <>
