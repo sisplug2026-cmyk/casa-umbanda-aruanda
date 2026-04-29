@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
@@ -15,10 +15,11 @@ export default async function AdminLayout({
 
   if (!user) redirect("/login?redirectTo=/admin/dashboard");
 
-  const { data: profile } = await supabase
+  const serviceClient = await createServiceClient();
+  const { data: profile } = await serviceClient
     .from("profiles")
     .select("role")
-    .eq("id", user!.id)
+    .eq("id", user.id)
     .single();
 
   if (!profile || profile.role !== "admin") redirect("/membro/perfil");
