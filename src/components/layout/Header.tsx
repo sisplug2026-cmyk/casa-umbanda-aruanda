@@ -91,6 +91,7 @@ export default function Header() {
                       aria-label="Sair"
                     >
                       <LogOut size={16} />
+                      <span>Sair</span>
                     </button>
                   </div>
                 ) : (
