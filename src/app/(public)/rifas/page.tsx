@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { createServiceClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 
@@ -9,18 +8,34 @@ export const metadata: Metadata = {
     "Participe das rifas da Casa de Umbanda Aruanda e concorra a prêmios especiais.",
 };
 
+// Cliente Supabase simples sem cookies para dados públicos
+async function getRifas() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!url || !key) {
+    console.error("Missing env vars");
+    return [];
+  }
+  
+  const res = await fetch(`${url}/rest/v1/rifas?status=in.(active,closed)&order=created_at.desc`, {
+    headers: {
+      "apikey": key,
+      "Authorization": `Bearer ${key}`,
+    },
+    next: { revalidate: 60 },
+  });
+  
+  if (!res.ok) {
+    console.error("Error fetching rifas:", res.status, await res.text());
+    return [];
+  }
+  
+  return res.json();
+}
+
 export default async function RifasPage() {
-  const supabase = createServiceClient();
-  
-  console.log("SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-  
-  const { data: rifas, error } = await supabase
-    .from("rifas")
-    .select("*")
-    .in("status", ["active", "closed"])
-    .order("created_at", { ascending: false });
-    
-  console.log("Rifas query result:", { rifasCount: rifas?.length, error: error?.message });
+  const rifas = await getRifas();
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -36,20 +51,15 @@ export default async function RifasPage() {
         </p>
         <div className="mt-6 h-1 w-24 bg-gradient-to-r from-[#4a7c59] to-[#8b5e3c] rounded mx-auto" />
       </header>
-      
-      {/* Debug info */}
-      <div className="text-xs text-gray-400 mb-4 text-center">
-        Debug: {rifas?.length ?? 0} rifas encontradas
-      </div>
 
-      {!rifas || rifas.length === 0 ? (
+      {rifas.length === 0 ? (
         <div className="text-center py-20 text-[#8b5e3c]">
           <p className="font-serif text-2xl mb-2">Nenhuma rifa ativa</p>
           <p className="text-sm">Volte em breve para participar de novos sorteios.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {rifas.map((rifa) => (
+          {rifas.map((rifa: any) => (
             <Link
               key={rifa.id}
               href={`/rifas/${rifa.id}`}
