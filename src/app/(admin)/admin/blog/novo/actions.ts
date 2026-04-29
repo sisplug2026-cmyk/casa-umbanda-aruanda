@@ -11,7 +11,7 @@ export async function criarPost(formData: FormData) {
   const content = formData.get("content") as string;
   const excerpt = formData.get("excerpt") as string;
   const category = formData.get("category") as string;
-  const status = formData.get("status") as string;
+  const status = formData.get("status") as "draft" | "published";
   const tags = (formData.get("tags") as string)?.split(",").map(t => t.trim()).filter(Boolean) || [];
 
   if (!title || !content) {
