@@ -13,7 +13,7 @@ export async function POST(
   const { data: { user } } = await supabaseUser.auth.getUser();
   if (!user) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
 
-  const supabase = await createServiceClient();
+  const supabase = createServiceClient();
 
   const { data: profile } = await supabase
     .from("profiles")
