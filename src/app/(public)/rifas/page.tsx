@@ -10,13 +10,8 @@ export const metadata: Metadata = {
 
 // Cliente Supabase simples sem cookies para dados públicos
 async function getRifas() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
-  if (!url || !key) {
-    console.error("Missing env vars");
-    return [];
-  }
+  const url = "https://dkgsuvstitomsaanemwy.supabase.co";
+  const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRrZ3N1dnN0aXRvbXNhYW5lbXd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NzQxNDEsImV4cCI6MjA5MzA1MDE0MX0.ADMamefc5G7u3eBVJseTRXO1W-0dhLnlv3MHZyhTBxg";
   
   const res = await fetch(`${url}/rest/v1/rifas?status=in.(active,closed)&order=created_at.desc`, {
     headers: {
@@ -27,7 +22,7 @@ async function getRifas() {
   });
   
   if (!res.ok) {
-    console.error("Error fetching rifas:", res.status, await res.text());
+    console.error("Error fetching rifas:", res.status);
     return [];
   }
   
