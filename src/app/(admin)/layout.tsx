@@ -15,7 +15,7 @@ export default async function AdminLayout({
 
   if (!user) redirect("/login?redirectTo=/admin/dashboard");
 
-  const serviceClient = await createServiceClient();
+  const serviceClient = createServiceClient();
   const { data: profile, error: profileError } = await serviceClient
     .from("profiles")
     .select("role")
