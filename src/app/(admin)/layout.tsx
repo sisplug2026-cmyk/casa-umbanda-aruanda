@@ -16,13 +16,19 @@ export default async function AdminLayout({
   if (!user) redirect("/login?redirectTo=/admin/dashboard");
 
   const serviceClient = await createServiceClient();
-  const { data: profile } = await serviceClient
+  const { data: profile, error: profileError } = await serviceClient
     .from("profiles")
     .select("role")
     .eq("id", user.id)
     .single();
 
-  if (!profile || profile.role !== "admin") redirect("/membro/perfil");
+  // Debug: log no servidor
+  console.log("Admin check:", { userId: user.id, profile, profileError });
+
+  if (!profile || profile.role !== "admin") {
+    console.log("Redirecting to /membro/perfil", { profile, role: profile?.role });
+    redirect("/membro/perfil");
+  }
 
   return (
     <>
