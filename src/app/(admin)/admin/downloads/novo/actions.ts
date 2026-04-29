@@ -9,7 +9,7 @@ export async function criarDownload(formData: FormData) {
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const category = formData.get("category") as string;
-  const file_type = formData.get("file_type") as string;
+  const file_type = formData.get("file_type") as "pdf" | "audio" | "video" | "other";
   const file_url = formData.get("file_url") as string;
 
   if (!title || !file_url) {
