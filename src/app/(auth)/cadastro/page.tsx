@@ -21,11 +21,13 @@ export default function CadastroPage() {
     const password = (form.elements.namedItem("password") as HTMLInputElement).value;
 
     const supabase = createClient();
+    const origin = window.location.origin;
     const { error: authError } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: { name, phone },
+        emailRedirectTo: `${origin}/api/auth/callback?next=/membro/perfil`,
       },
     });
 
@@ -51,11 +53,14 @@ export default function CadastroPage() {
             <span className="text-white text-2xl font-bold font-serif">A</span>
           </div>
           <h1 className="font-serif text-2xl font-bold text-[#2c1810] mb-2">
-            Conta criada!
+            Verifique seu e-mail!
           </h1>
+          <p className="text-[#6b4c3b] text-sm mb-2">
+            Enviamos um link de confirmação para o seu e-mail.
+          </p>
           <p className="text-[#6b4c3b] text-sm mb-6">
-            Verifique seu e-mail para confirmar o cadastro. Após a confirmação,
-            você poderá fazer login.
+            Clique no link recebido para ativar sua conta. Só então você
+            conseguirá fazer login.
           </p>
           <Link
             href="/login"
@@ -116,11 +121,12 @@ export default function CadastroPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-[#2c1810] mb-1">
-              WhatsApp (opcional)
+              WhatsApp / Celular <span className="text-red-500">*</span>
             </label>
             <input
               type="tel"
               name="phone"
+              required
               placeholder="(11) 99999-9999"
               className="w-full px-4 py-2.5 rounded-xl border border-[#8b5e3c]/20 bg-white text-[#2c1810] placeholder-[#8b5e3c]/50 focus:outline-none focus:ring-2 focus:ring-[#4a7c59]/40 transition"
             />

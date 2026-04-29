@@ -26,9 +26,15 @@ function LoginForm() {
     const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (authError) {
-      setError(authError.message === "Invalid login credentials"
-        ? "E-mail ou senha incorretos."
-        : authError.message);
+      if (authError.message === "Invalid login credentials") {
+        setError("E-mail ou senha incorretos.");
+      } else if (authError.message === "Email not confirmed") {
+        setError(
+          "Você ainda não confirmou seu e-mail. Verifique sua caixa de entrada e clique no link de ativação."
+        );
+      } else {
+        setError(authError.message);
+      }
       setLoading(false);
       return;
     }
