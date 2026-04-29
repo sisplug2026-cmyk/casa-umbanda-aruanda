@@ -11,11 +11,16 @@ export const metadata: Metadata = {
 
 export default async function RifasPage() {
   const supabase = createServiceClient();
-  const { data: rifas } = await supabase
+  
+  console.log("SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+  
+  const { data: rifas, error } = await supabase
     .from("rifas")
     .select("*")
     .in("status", ["active", "closed"])
     .order("created_at", { ascending: false });
+    
+  console.log("Rifas query result:", { rifasCount: rifas?.length, error: error?.message });
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -31,6 +36,11 @@ export default async function RifasPage() {
         </p>
         <div className="mt-6 h-1 w-24 bg-gradient-to-r from-[#4a7c59] to-[#8b5e3c] rounded mx-auto" />
       </header>
+      
+      {/* Debug info */}
+      <div className="text-xs text-gray-400 mb-4 text-center">
+        Debug: {rifas?.length ?? 0} rifas encontradas
+      </div>
 
       {!rifas || rifas.length === 0 ? (
         <div className="text-center py-20 text-[#8b5e3c]">
