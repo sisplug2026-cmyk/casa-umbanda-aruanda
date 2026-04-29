@@ -1,9 +1,54 @@
-import type { Metadata } from "next";
+"use client";
+
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
-export const metadata: Metadata = { title: "Entrar na Conta" };
+function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") ?? "/membro/perfil";
 
-export default function LoginPage() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const form = e.currentTarget;
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+    const password = (form.elements.namedItem("password") as HTMLInputElement).value;
+
+    const supabase = createClient();
+    const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (authError) {
+      setError(authError.message === "Invalid login credentials"
+        ? "E-mail ou senha incorretos."
+        : authError.message);
+      setLoading(false);
+      return;
+    }
+
+    // Verificar role para redirecionar corretamente
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .single();
+
+    if (profile?.role === "admin") {
+      router.push("/admin/dashboard");
+    } else {
+      router.push(redirectTo);
+    }
+
+    router.refresh();
+  }
+
   return (
     <div className="w-full max-w-md">
       <div className="bg-[#fdfaf5] rounded-2xl p-8 shadow-lg border border-[#8b5e3c]/10">
@@ -19,7 +64,13 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form className="space-y-4">
+        {error && (
+          <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-[#2c1810] mb-1">
               E-mail
@@ -46,9 +97,10 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-3 bg-gradient-to-r from-[#4a7c59] to-[#2d5c3a] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-md"
+            disabled={loading}
+            className="w-full py-3 bg-gradient-to-r from-[#4a7c59] to-[#2d5c3a] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Entrar
+            {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
 
@@ -63,5 +115,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

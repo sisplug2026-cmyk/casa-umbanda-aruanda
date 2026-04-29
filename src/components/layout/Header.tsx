@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { href: "/", label: "Início" },
@@ -17,6 +20,15 @@ const navLinks = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const router = useRouter();
+  const { user, profile, loading } = useAuth();
+
+  async function handleSignOut() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-[#fdfaf5]/95 backdrop-blur-sm border-b border-[#8b5e3c]/15 shadow-sm">
@@ -52,12 +64,35 @@ export default function Header() {
 
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="hidden sm:inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-[#4a7c59] to-[#2d5c3a] rounded-lg hover:opacity-90 transition-opacity shadow-sm"
-            >
-              Área do Membro
-            </Link>
+            {!loading && (
+              <>
+                {user ? (
+                  <div className="hidden sm:flex items-center gap-2">
+                    <Link
+                      href={profile?.role === "admin" ? "/admin/dashboard" : "/membro/perfil"}
+                      className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#4a7c59] border border-[#4a7c59]/30 rounded-lg hover:bg-[#4a7c59]/10 transition-colors"
+                    >
+                      <User size={16} />
+                      <span>{profile?.name ?? "Meu Perfil"}</span>
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#8b5e3c] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      aria-label="Sair"
+                    >
+                      <LogOut size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="hidden sm:inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-[#4a7c59] to-[#2d5c3a] rounded-lg hover:opacity-90 transition-opacity shadow-sm"
+                  >
+                    Área do Membro
+                  </Link>
+                )}
+              </>
+            )}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden p-2 rounded-lg text-[#5c3d1e] hover:bg-[#8b5e3c]/10 transition-colors"
@@ -87,13 +122,33 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/login"
-            onClick={() => setMobileOpen(false)}
-            className="mt-2 px-3 py-2 text-sm font-semibold text-center text-white bg-gradient-to-r from-[#4a7c59] to-[#2d5c3a] rounded-lg"
-          >
-            Área do Membro
-          </Link>
+          {!loading && (
+            user ? (
+              <>
+                <Link
+                  href={profile?.role === "admin" ? "/admin/dashboard" : "/membro/perfil"}
+                  onClick={() => setMobileOpen(false)}
+                  className="mt-2 px-3 py-2 text-sm font-semibold text-center text-[#4a7c59] border border-[#4a7c59]/30 rounded-lg"
+                >
+                  {profile?.name ?? "Meu Perfil"}
+                </Link>
+                <button
+                  onClick={() => { setMobileOpen(false); handleSignOut(); }}
+                  className="px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg text-left"
+                >
+                  Sair
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                className="mt-2 px-3 py-2 text-sm font-semibold text-center text-white bg-gradient-to-r from-[#4a7c59] to-[#2d5c3a] rounded-lg"
+              >
+                Área do Membro
+              </Link>
+            )
+          )}
         </nav>
       </div>
     </header>

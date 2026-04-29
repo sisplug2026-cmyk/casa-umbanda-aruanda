@@ -1,9 +1,73 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+"use client";
 
-export const metadata: Metadata = { title: "Criar Conta" };
+import { useState } from "react";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 export default function CadastroPage() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const form = e.currentTarget;
+    const name = (form.elements.namedItem("name") as HTMLInputElement).value;
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+    const phone = (form.elements.namedItem("phone") as HTMLInputElement).value;
+    const password = (form.elements.namedItem("password") as HTMLInputElement).value;
+
+    const supabase = createClient();
+    const { error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name, phone },
+      },
+    });
+
+    if (authError) {
+      setError(
+        authError.message.includes("already registered")
+          ? "Este e-mail já está cadastrado."
+          : authError.message
+      );
+      setLoading(false);
+      return;
+    }
+
+    setSuccess(true);
+    setLoading(false);
+  }
+
+  if (success) {
+    return (
+      <div className="w-full max-w-md">
+        <div className="bg-[#fdfaf5] rounded-2xl p-8 shadow-lg border border-[#8b5e3c]/10 text-center">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#4a7c59] to-[#2d5c3a] flex items-center justify-center mx-auto mb-4">
+            <span className="text-white text-2xl font-bold font-serif">A</span>
+          </div>
+          <h1 className="font-serif text-2xl font-bold text-[#2c1810] mb-2">
+            Conta criada!
+          </h1>
+          <p className="text-[#6b4c3b] text-sm mb-6">
+            Verifique seu e-mail para confirmar o cadastro. Após a confirmação,
+            você poderá fazer login.
+          </p>
+          <Link
+            href="/login"
+            className="inline-block w-full py-3 bg-gradient-to-r from-[#4a7c59] to-[#2d5c3a] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-md text-center"
+          >
+            Ir para o Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full max-w-md">
       <div className="bg-[#fdfaf5] rounded-2xl p-8 shadow-lg border border-[#8b5e3c]/10">
@@ -19,7 +83,13 @@ export default function CadastroPage() {
           </p>
         </div>
 
-        <form className="space-y-4">
+        {error && (
+          <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-[#2c1810] mb-1">
               Nome completo
@@ -70,9 +140,10 @@ export default function CadastroPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-3 bg-gradient-to-r from-[#4a7c59] to-[#2d5c3a] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-md"
+            disabled={loading}
+            className="w-full py-3 bg-gradient-to-r from-[#4a7c59] to-[#2d5c3a] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Criar Conta
+            {loading ? "Criando conta..." : "Criar Conta"}
           </button>
         </form>
 
