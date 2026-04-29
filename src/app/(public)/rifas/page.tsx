@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RifasPage() {
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   const { data: rifas } = await supabase
     .from("rifas")
     .select("*")
