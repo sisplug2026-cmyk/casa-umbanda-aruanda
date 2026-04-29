@@ -10,19 +10,23 @@ export const metadata: Metadata = {
 
 // Cliente Supabase simples sem cookies para dados públicos
 async function getRifas() {
-  // Teste com dados mockados
-  return [
-    {
-      id: "test-1",
-      title: "RIFA TESTE",
-      description: "Descrição de teste",
-      status: "active",
-      price_per_num: 10,
-      numero_inicio: 1,
-      numero_fim: 100,
-      prize_images: null,
-    }
-  ];
+  const url = "https://dkgsuvstitomsaanemwy.supabase.co";
+  const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRrZ3N1dnN0aXRvbXNhYW5lbXd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NzQxNDEsImV4cCI6MjA5MzA1MDE0MX0.ADMamefc5G7u3eBVJseTRXO1W-0dhLnlv3MHZyhTBxg";
+  
+  const res = await fetch(`${url}/rest/v1/rifas?status=in.(active,closed)&order=created_at.desc`, {
+    headers: {
+      "apikey": key,
+      "Authorization": `Bearer ${key}`,
+    },
+    next: { revalidate: 60 },
+  });
+  
+  if (!res.ok) {
+    console.error("Error fetching rifas:", res.status);
+    return [];
+  }
+  
+  return res.json();
 }
 
 export default async function RifasPage() {
@@ -35,7 +39,7 @@ export default async function RifasPage() {
           Sorteios
         </p>
         <h1 className="font-serif text-5xl sm:text-6xl font-bold text-[#2c1810] mb-4">
-          Rifas 2025
+          Rifas
         </h1>
         <p className="text-[#6b4c3b] text-lg">
           Participe, colabore com a casa e concorra a prêmios especiais
