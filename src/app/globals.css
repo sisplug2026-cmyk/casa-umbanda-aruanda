@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+/* =============================================
+   TEMA — Paleta Casa de Umbanda Aruanda
+   ============================================= */
+@theme inline {
+  /* Cores principais */
+  --color-terra: #8b5e3c;
+  --color-terra-dark: #5c3d1e;
+  --color-terra-light: #c4956a;
+  --color-folha: #4a7c59;
+  --color-folha-light: #7bae8d;
+  --color-folha-dark: #2d5c3a;
+  --color-ceu: #7b9ec0;
+  --color-ceu-light: #b8d0e8;
+  --color-areia: #f5ecd7;
+  --color-areia-dark: #e8d9bf;
+  --color-branco-fumo: #fdfaf5;
+  --color-texto: #2c1810;
+  --color-texto-suave: #6b4c3b;
+
+  /* Sobrescrever background/foreground padrão */
+  --color-background: var(--color-areia);
+  --color-foreground: var(--color-texto);
+
+  /* shadcn/ui — mapeamento de tokens para paleta Aruanda */
+  --color-primary: #4a7c59;
+  --color-primary-foreground: #fdfaf5;
+  --color-secondary: #8b5e3c;
+  --color-secondary-foreground: #fdfaf5;
+  --color-muted: #e8d9bf;
+  --color-muted-foreground: #6b4c3b;
+  --color-accent: #f5ecd7;
+  --color-accent-foreground: #2c1810;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #fdfaf5;
+  --color-border: rgba(139, 94, 60, 0.2);
+  --color-input: rgba(139, 94, 60, 0.2);
+  --color-ring: #4a7c59;
+  --color-card: #fdfaf5;
+  --color-card-foreground: #2c1810;
+  --color-popover: #fdfaf5;
+  --color-popover-foreground: #2c1810;
+  --radius: 0.5rem;
+
+  /* Fontes — variáveis injetadas pelo next/font em layout.tsx */
+  --font-serif: var(--font-crimson-pro), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+
+/* =============================================
+   BASE
+   ============================================= */
+:root {
+  --background: #f5ecd7;
+  --foreground: #2c1810;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =============================================
+   TIPOGRAFIA
+   ============================================= */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-crimson-pro), Georgia, serif;
+  font-weight: 700;
+  color: #2c1810;
+  line-height: 1.2;
+}
+
+/* =============================================
+   UTILITÁRIOS CUSTOMIZADOS
+   ============================================= */
+@utility natureza-gradient {
+  background: linear-gradient(135deg, #f5ecd7 0%, #e8d9bf 40%, #d4c5a0 100%);
+}
+
+@utility hero-gradient {
+  background: linear-gradient(
+    160deg,
+    #2d5c3a 0%,
+    #4a7c59 30%,
+    #5c3d1e 65%,
+    #8b5e3c 100%
+  );
+}
+
+@utility text-gradient-terra {
+  background: linear-gradient(135deg, #8b5e3c, #5c3d1e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@utility glass-card {
+  background: rgba(253, 250, 245, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(139, 94, 60, 0.15);
+}
