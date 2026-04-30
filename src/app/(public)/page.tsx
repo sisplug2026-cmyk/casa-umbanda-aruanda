@@ -14,12 +14,14 @@ export default async function HomePage() {
   const supabase = createServiceClient();
   
   // Buscar todas as benções de paz (áudios)
-  const { data: audios } = await supabase
+  const { data: audios, error } = await supabase
     .from("downloads")
     .select("id, title, file_url, created_at")
     .eq("category", "bencao-de-paz")
     .eq("file_type", "audio")
     .order("created_at", { ascending: false });
+
+  console.log("Audios encontrados:", audios?.length || 0, "Erro:", error?.message || "nenhum");
 
   return (
     <>
