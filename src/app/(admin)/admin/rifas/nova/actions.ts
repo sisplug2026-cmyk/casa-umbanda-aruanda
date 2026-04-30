@@ -9,6 +9,7 @@ export async function criarRifa(formData: FormData) {
 
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
+  const prize_image = formData.get("prize_image") as string;
   const numero_inicio = parseInt(formData.get("numero_inicio") as string);
   const numero_fim = parseInt(formData.get("numero_fim") as string);
   const price_per_num = parseFloat(formData.get("price_per_num") as string);
@@ -25,6 +26,7 @@ export async function criarRifa(formData: FormData) {
     .insert({
       title,
       description,
+      prize_images: prize_image ? [prize_image] : null,
       numero_inicio,
       numero_fim,
       price_per_num,

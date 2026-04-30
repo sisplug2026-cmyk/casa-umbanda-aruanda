@@ -45,6 +45,21 @@ export default function NovaRifaPage() {
 
           <div>
             <label className="block text-sm font-medium text-[#2c1810] mb-1">
+              URL da foto do prêmio (Supabase Storage)
+            </label>
+            <input
+              type="url"
+              name="prize_image"
+              placeholder="https://..."
+              className="w-full px-4 py-2.5 rounded-xl border border-[#8b5e3c]/20 bg-white text-[#2c1810] focus:outline-none focus:ring-2 focus:ring-[#4a7c59]/40 transition"
+            />
+            <p className="text-xs text-[#8b5e3c] mt-1">
+              Faça upload da imagem no Supabase Storage e cole a URL aqui.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#2c1810] mb-1">
               Tipo de numeração
             </label>
             <select
