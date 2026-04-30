@@ -15,7 +15,7 @@ export async function criarRifa(formData: FormData) {
   const price_per_num = parseFloat(formData.get("price_per_num") as string);
   const tipo_numeracao = (formData.get("tipo_numeracao") as "numerica" | "nomes_masculinos" | "nomes_femininos" | "times_brasil" | "times_europa") || "numerica";
 
-  console.log("Dados recebidos:", { title, prize_image, tipo_numeracao, numero_inicio, numero_fim });
+  console.log("Dados recebidos:", { title, prize_image: prize_image || "VAZIO", tipo_numeracao, numero_inicio, numero_fim });
 
   if (!title || !numero_inicio || !numero_fim || !price_per_num) {
     return { error: "Preencha todos os campos obrigatórios" };
