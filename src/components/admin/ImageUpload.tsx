@@ -29,7 +29,7 @@ export default function ImageUpload({ onUpload }: ImageUploadProps) {
       const filePath = `rifas/${fileName}`;
 
       // Upload para o Supabase Storage
-      const { error: uploadError } = await supabase.storage
+      const { data, error: uploadError } = await supabase.storage
         .from("rifas")
         .upload(filePath, file, {
           cacheControl: "3600",
@@ -38,7 +38,8 @@ export default function ImageUpload({ onUpload }: ImageUploadProps) {
 
       if (uploadError) {
         console.error("Erro no upload:", uploadError);
-        alert("Erro ao fazer upload da imagem");
+        alert("Erro ao fazer upload da imagem: " + uploadError.message);
+        setPreview(null);
         return;
       }
 
