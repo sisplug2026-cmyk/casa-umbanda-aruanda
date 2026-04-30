@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
+import { excluirPost } from "./actions";
 
 export const metadata: Metadata = { title: "Admin — Blog" };
 
 export default async function AdminBlogPage() {
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   const { data: posts } = await supabase
     .from("posts")
     .select("id, title, slug, status, category, published_at, created_at")
@@ -62,6 +63,16 @@ export default async function AdminBlogPage() {
                 >
                   Editar
                 </Link>
+                <form action={excluirPost} className="inline">
+                  <input type="hidden" name="id" value={post.id} />
+                  <button
+                    type="submit"
+                    className="text-xs text-red-600 hover:text-red-700 font-medium transition-colors"
+                    onclick="return confirm('Tem certeza que deseja excluir este post?')"
+                  >
+                    Excluir
+                  </button>
+                </form>
               </div>
             </div>
           ))
