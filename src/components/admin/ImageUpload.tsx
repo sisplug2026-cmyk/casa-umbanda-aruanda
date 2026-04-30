@@ -38,7 +38,8 @@ export default function ImageUpload({ onUpload }: ImageUploadProps) {
 
       if (uploadError) {
         console.error("Erro no upload:", uploadError);
-        alert("Erro ao fazer upload da imagem: " + uploadError.message);
+        console.error("Detalhes:", JSON.stringify(uploadError));
+        alert("Erro ao fazer upload da imagem: " + (uploadError.message || JSON.stringify(uploadError)));
         setPreview(null);
         return;
       }
