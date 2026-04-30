@@ -182,6 +182,7 @@ export type Database = {
           drawn_at: string | null;
           created_by: string | null;
           created_at: string;
+          tipo_numeracao: "numerica" | "nomes_masculinos" | "nomes_femininos" | "times_brasil" | "times_europa" | null;
         };
         Insert: {
           id?: string;
@@ -197,6 +198,7 @@ export type Database = {
           drawn_at?: string | null;
           created_by?: string | null;
           created_at?: string;
+          tipo_numeracao?: "numerica" | "nomes_masculinos" | "nomes_femininos" | "times_brasil" | "times_europa" | null;
         };
         Update: {
           id?: string;
@@ -212,6 +214,7 @@ export type Database = {
           drawn_at?: string | null;
           created_by?: string | null;
           created_at?: string;
+          tipo_numeracao?: "numerica" | "nomes_masculinos" | "nomes_femininos" | "times_brasil" | "times_europa" | null;
         };
         Relationships: [];
       };
@@ -220,6 +223,7 @@ export type Database = {
           id: string;
           rifa_id: string;
           numero: number;
+          nome_exibicao: string | null;
           status: "disponivel" | "reservado" | "pago";
           reservado_por: string | null;
           nome_interessado: string | null;
@@ -235,6 +239,7 @@ export type Database = {
           id?: string;
           rifa_id: string;
           numero: number;
+          nome_exibicao?: string | null;
           status?: "disponivel" | "reservado" | "pago";
           reservado_por?: string | null;
           nome_interessado?: string | null;
@@ -250,6 +255,7 @@ export type Database = {
           id?: string;
           rifa_id?: string;
           numero?: number;
+          nome_exibicao?: string | null;
           status?: "disponivel" | "reservado" | "pago";
           reservado_por?: string | null;
           nome_interessado?: string | null;
