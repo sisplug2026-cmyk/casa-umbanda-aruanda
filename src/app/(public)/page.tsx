@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import HeroSection from "@/components/home/HeroSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
-import BencaoPaz from "@/components/home/BencaoPaz";
+import BencaoPazFloat from "@/components/home/BencaoPazFloat";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -13,34 +13,21 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const supabase = createServiceClient();
   
-  // Buscar a benção de paz mais recente
-  const { data: bencao } = await supabase
+  // Buscar todas as benções de paz (áudios)
+  const { data: audios } = await supabase
     .from("downloads")
-    .select("*")
+    .select("id, title, file_url, created_at")
     .eq("category", "bencao-de-paz")
     .eq("file_type", "audio")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .single();
+    .order("created_at", { ascending: false });
 
   return (
     <>
+      {/* Botão flutuante Benção de Paz */}
+      <BencaoPazFloat audios={audios || []} />
+
       <HeroSection />
       <FeaturesSection />
-
-      {/* Seção Benção de Paz */}
-      <BencaoPaz
-        audioUrl={bencao?.file_url || null}
-        titulo={bencao?.title || "Mensagem de Paz"}
-        data={bencao?.created_at 
-          ? new Date(bencao.created_at).toLocaleDateString("pt-BR", {
-              day: "2-digit",
-              month: "long",
-              year: "numeric",
-            })
-          : ""
-        }
-      />
 
       {/* Seção de Citação */}
       <section className="py-16 bg-[#2d5c3a]">
