@@ -115,24 +115,10 @@ $$;
 
 -- =====================
 -- Seed: Popular números de uma rifa ao criá-la
+-- REMOVIDO: Agora os números são criados via Server Action com suporte a nomes/times
 -- =====================
-CREATE OR REPLACE FUNCTION public.popular_numeros_rifa()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
-DECLARE
-  i INT;
-BEGIN
-  FOR i IN NEW.numero_inicio..NEW.numero_fim LOOP
-    INSERT INTO public.rifa_numeros (rifa_id, numero)
-    VALUES (NEW.id, i);
-  END LOOP;
-  RETURN NEW;
-END;
-$$;
+-- CREATE OR REPLACE FUNCTION public.popular_numeros_rifa()
+-- ...
 
 DROP TRIGGER IF EXISTS rifa_popular_numeros ON public.rifas;
-CREATE TRIGGER rifa_popular_numeros
-  AFTER INSERT ON public.rifas
-  FOR EACH ROW EXECUTE FUNCTION public.popular_numeros_rifa();
+DROP FUNCTION IF EXISTS public.popular_numeros_rifa();

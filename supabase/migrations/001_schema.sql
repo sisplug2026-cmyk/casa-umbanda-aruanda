@@ -63,7 +63,9 @@ CREATE TABLE IF NOT EXISTS public.rifas (
   winner_id      UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   drawn_at       TIMESTAMPTZ,
   created_by     UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
-  created_at     TIMESTAMPTZ DEFAULT NOW()
+  created_at     TIMESTAMPTZ DEFAULT NOW(),
+  -- Novos campos para tipos de numeração
+  tipo_numeracao TEXT DEFAULT 'numerica' CHECK (tipo_numeracao IN ('numerica', 'nomes_masculinos', 'nomes_femininos', 'times_brasil', 'times_europa'))
 );
 
 -- Números de rifa
@@ -71,6 +73,7 @@ CREATE TABLE IF NOT EXISTS public.rifa_numeros (
   id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   rifa_id              UUID NOT NULL REFERENCES public.rifas(id) ON DELETE CASCADE,
   numero               INT NOT NULL,
+  nome_exibicao        TEXT, -- nome/time exibido (para tipos não numéricos)
   status               TEXT NOT NULL DEFAULT 'disponivel'
                          CHECK (status IN ('disponivel', 'reservado', 'pago')),
   reservado_por        UUID REFERENCES public.profiles(id) ON DELETE SET NULL,

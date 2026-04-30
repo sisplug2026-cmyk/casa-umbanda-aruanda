@@ -43,6 +43,26 @@ export default function NovaRifaPage() {
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-[#2c1810] mb-1">
+              Tipo de numeração
+            </label>
+            <select
+              name="tipo_numeracao"
+              defaultValue="numerica"
+              className="w-full px-4 py-2.5 rounded-xl border border-[#8b5e3c]/20 bg-white text-[#2c1810] focus:outline-none focus:ring-2 focus:ring-[#4a7c59]/40 transition"
+            >
+              <option value="numerica">Numérica (001, 002, 003...)</option>
+              <option value="nomes_masculinos">Nomes Masculinos (Arthur, Bernardo, Carlos...)</option>
+              <option value="nomes_femininos">Nomes Femininos (Ana, Beatriz, Carolina...)</option>
+              <option value="times_brasil">Times de Futebol do Brasil (Flamengo, Palmeiras, Santos...)</option>
+              <option value="times_europa">Times de Futebol da Europa (Real Madrid, Barcelona, Manchester...)</option>
+            </select>
+            <p className="text-xs text-[#8b5e3c] mt-1">
+              Escolha como os números da rifa serão exibidos.
+            </p>
+          </div>
+
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-[#2c1810] mb-1">
