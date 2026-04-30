@@ -14,10 +14,17 @@ export default function NovaRifaForm() {
     setLoading(true);
     setError("");
 
-    const formData = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    // Garantir que o tipo_numeracao está sendo enviado
+    const tipoNumeracao = (form.elements.namedItem("tipo_numeracao") as HTMLSelectElement)?.value;
+    if (tipoNumeracao) {
+      formData.set("tipo_numeracao", tipoNumeracao);
+    }
     
     if (imageUrl) {
-      formData.append("prize_image", imageUrl);
+      formData.set("prize_image", imageUrl);
     }
 
     const result = await criarRifa(formData);
@@ -28,7 +35,6 @@ export default function NovaRifaForm() {
       return;
     }
 
-    // Redirecionar via window.location para evitar problemas com Server Action
     window.location.href = "/admin/rifas";
   }
 
