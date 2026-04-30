@@ -3,12 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 
-export async function excluirRifa(formData: FormData) {
+export async function excluirRifa(formData: FormData): Promise<void> {
   const supabase = createServiceClient();
   const id = formData.get("id") as string;
 
   if (!id) {
-    return { error: "ID da rifa não fornecido" };
+    throw new Error("ID da rifa não fornecido");
   }
 
   // Primeiro excluir os números associados
@@ -19,7 +19,7 @@ export async function excluirRifa(formData: FormData) {
 
   if (numerosError) {
     console.error("Erro ao excluir números:", numerosError);
-    return { error: numerosError.message };
+    throw new Error(numerosError.message);
   }
 
   // Depois excluir a rifa
@@ -30,11 +30,9 @@ export async function excluirRifa(formData: FormData) {
 
   if (error) {
     console.error("Erro ao excluir rifa:", error);
-    return { error: error.message };
+    throw new Error(error.message);
   }
 
   revalidatePath("/rifas");
   revalidatePath("/admin/rifas");
-
-  return { success: true };
 }
