@@ -73,8 +73,12 @@ export default function NovaRifaForm() {
         <label className="block text-sm font-medium text-[#2c1810] mb-1">
           Foto do prêmio
         </label>
-        <ImageUpload onUpload={setImageUrl} />
+        <ImageUpload onUpload={(url) => {
+          console.log("Image uploaded:", url);
+          setImageUrl(url);
+        }} />
         <input type="hidden" name="prize_image" value={imageUrl} />
+        <p className="text-xs text-gray-500 mt-1">URL: {imageUrl || "Nenhuma"}</p>
       </div>
 
       <div>
