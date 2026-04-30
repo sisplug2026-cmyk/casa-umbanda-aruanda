@@ -9,10 +9,13 @@ export default function NovaRifaForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(formData: FormData) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setLoading(true);
     setError("");
 
+    const formData = new FormData(e.currentTarget);
+    
     if (imageUrl) {
       formData.append("prize_image", imageUrl);
     }
@@ -30,7 +33,7 @@ export default function NovaRifaForm() {
   }
 
   return (
-    <form action={handleSubmit} className="space-y-5 max-w-lg">
+    <form onSubmit={handleSubmit} className="space-y-5 max-w-lg">
       {error && (
         <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
           {error}
