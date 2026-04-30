@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { createClient } from "@/lib/supabase/server";
+import { enviarMensagemWhatsApp, formatarMensagemSorteio } from "@/lib/whatsapp/evolution";
 
 export async function POST(
   _request: NextRequest,
@@ -28,7 +29,7 @@ export async function POST(
   // Verificar rifa
   const { data: rifa } = await supabase
     .from("rifas")
-    .select("id, status")
+    .select("id, status, title")
     .eq("id", rifaId)
     .single();
 
@@ -77,18 +78,14 @@ export async function POST(
     })
     .eq("id", rifaId);
 
-  // Notificar via WhatsApp se houver telefone
+  // Notificar via WhatsApp Evolution API
   if (vencedor.telefone_interessado) {
-    await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/whatsapp/notificar`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        telefone: vencedor.telefone_interessado,
-        nome: vencedor.nome_interessado,
-        numero: vencedor.numero,
-        rifa_id: rifaId,
-      }),
-    });
+    const mensagem = formatarMensagemSorteio(
+      vencedor.nome_interessado || "Participante",
+      rifa.title,
+      vencedor.numero
+    );
+    await enviarMensagemWhatsApp(vencedor.telefone_interessado, mensagem);
   }
 
   return NextResponse.json({
