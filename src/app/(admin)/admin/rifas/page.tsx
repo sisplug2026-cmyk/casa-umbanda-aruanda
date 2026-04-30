@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
+import { excluirRifa } from "./actions";
 
 export const metadata: Metadata = { title: "Admin — Rifas" };
 
 export default async function AdminRifasPage() {
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   const { data: rifas } = await supabase
     .from("rifas")
     .select("*")
@@ -66,6 +67,15 @@ export default async function AdminRifasPage() {
                 >
                   Gerenciar
                 </Link>
+                <form action={excluirRifa} className="inline">
+                  <input type="hidden" name="id" value={rifa.id} />
+                  <button
+                    type="submit"
+                    className="text-xs text-red-600 hover:text-red-700 font-medium transition-colors"
+                  >
+                    Excluir
+                  </button>
+                </form>
               </div>
             </div>
           ))
