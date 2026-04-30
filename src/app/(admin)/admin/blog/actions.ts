@@ -3,12 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 
-export async function excluirPost(formData: FormData) {
+export async function excluirPost(formData: FormData): Promise<void> {
   const supabase = createServiceClient();
   const id = formData.get("id") as string;
 
   if (!id) {
-    return { error: "ID do post não fornecido" };
+    throw new Error("ID do post não fornecido");
   }
 
   const { error } = await supabase
@@ -18,11 +18,9 @@ export async function excluirPost(formData: FormData) {
 
   if (error) {
     console.error("Erro ao excluir post:", error);
-    return { error: error.message };
+    throw new Error(error.message);
   }
 
   revalidatePath("/blog");
   revalidatePath("/admin/blog");
-
-  return { success: true };
 }

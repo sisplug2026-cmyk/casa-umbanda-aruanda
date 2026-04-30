@@ -68,7 +68,6 @@ export default async function AdminBlogPage() {
                   <button
                     type="submit"
                     className="text-xs text-red-600 hover:text-red-700 font-medium transition-colors"
-                    onclick="return confirm('Tem certeza que deseja excluir este post?')"
                   >
                     Excluir
                   </button>
