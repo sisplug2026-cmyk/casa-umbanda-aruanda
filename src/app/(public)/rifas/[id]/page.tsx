@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
@@ -10,7 +10,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createServiceClient();
   const { data: rifa } = await supabase
     .from("rifas")
     .select("title, description")
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RifaPage({ params }: Props) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createServiceClient();
 
   const { data: rifa } = await supabase
     .from("rifas")
@@ -34,7 +34,7 @@ export default async function RifaPage({ params }: Props) {
 
   const { data: numeros } = await supabase
     .from("rifa_numeros")
-    .select("numero, status")
+    .select("numero, nome_exibicao, status")
     .eq("rifa_id", id)
     .order("numero");
 
@@ -42,6 +42,9 @@ export default async function RifaPage({ params }: Props) {
   const pagos = numeros?.filter((n) => n.status === "pago").length ?? 0;
   const reservados = numeros?.filter((n) => n.status === "reservado").length ?? 0;
   const disponiveis = numeros?.filter((n) => n.status === "disponivel").length ?? 0;
+
+  // Verificar se usa numeração especial (nomes/times)
+  const usaNomes = rifa.tipo_numeracao !== "numerica";
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -120,30 +123,39 @@ export default async function RifaPage({ params }: Props) {
         {/* Grid de números */}
         <div className="lg:col-span-2">
           <h2 className="font-serif text-xl font-bold text-[#2c1810] mb-4">
-            Escolha seu(s) número(s)
+            {usaNomes ? "Escolha seu(s) nome(s)" : "Escolha seu(s) número(s)"}
           </h2>
-          <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-1.5">
-            {numeros?.map((n) => (
-              <button
-                key={n.numero}
-                disabled={n.status !== "disponivel"}
-                className={`
-                  aspect-square rounded-lg text-xs font-bold transition-all
-                  ${
-                    n.status === "disponivel"
-                      ? "bg-[#4a7c59] text-white hover:bg-[#2d5c3a] hover:scale-105 cursor-pointer"
-                      : n.status === "reservado"
-                      ? "bg-[#d97706] text-white cursor-not-allowed opacity-80"
-                      : "bg-[#6b7280] text-white cursor-not-allowed opacity-60"
-                  }
-                `}
-              >
-                {n.numero.toString().padStart(3, "0")}
-              </button>
-            ))}
+          <div className={`grid gap-1.5 ${
+            usaNomes 
+              ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4" 
+              : "grid-cols-5 sm:grid-cols-8 md:grid-cols-10"
+          }`}>
+            {numeros?.map((n) => {
+              const display = n.nome_exibicao || n.numero.toString().padStart(3, "0");
+              return (
+                <button
+                  key={n.numero}
+                  disabled={n.status !== "disponivel"}
+                  title={display}
+                  className={`
+                    rounded-lg text-xs font-bold transition-all
+                    ${
+                      n.status === "disponivel"
+                        ? "bg-[#4a7c59] text-white hover:bg-[#2d5c3a] hover:scale-105 cursor-pointer"
+                        : n.status === "reservado"
+                        ? "bg-[#d97706] text-white cursor-not-allowed opacity-80"
+                        : "bg-[#6b7280] text-white cursor-not-allowed opacity-60"
+                    }
+                    ${usaNomes ? "py-3 px-2" : "aspect-square"}
+                  `}
+                >
+                  {display}
+                </button>
+              );
+            })}
           </div>
           <p className="text-xs text-[#8b5e3c] mt-4">
-            Clique em um número verde para reservá-lo. A reserva expira em 30 minutos
+            Clique em um {usaNomes ? "nome" : "número"} verde para reservá-lo. A reserva expira em 30 minutos
             sem pagamento.
           </p>
         </div>
