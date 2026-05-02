@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
+import DownloadImageButton from "@/components/blog/DownloadImageButton";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -72,10 +73,16 @@ export default async function BlogPostPage({ params }: Props) {
       </div>
 
       {post.cover_url && (
-        <div
-          className="w-full h-64 sm:h-80 rounded-2xl bg-cover bg-center mb-8"
-          style={{ backgroundImage: `url(${post.cover_url})` }}
-        />
+        <div className="mb-8">
+          <div
+            className="w-full h-64 sm:h-80 rounded-2xl bg-cover bg-center mb-4"
+            style={{ backgroundImage: `url(${post.cover_url})` }}
+          />
+          <DownloadImageButton 
+            imageUrl={post.cover_url} 
+            fileName={`${post.slug}-capa.jpg`}
+          />
+        </div>
       )}
 
       <div
