@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { createServiceClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { atualizarPagina } from "../actions";
+import { atualizarPagina } from "../../actions";
 
 interface Props {
   params: Promise<{ id: string }>;
