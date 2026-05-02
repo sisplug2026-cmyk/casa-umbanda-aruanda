@@ -11,11 +11,13 @@ export const metadata: Metadata = {
 
 export default async function BazarPage() {
   const supabase = createServiceClient();
-  const { data: anuncios } = await supabase
+  const { data: anuncios, error } = await supabase
     .from("bazar_anuncios")
     .select("*, profiles(name)")
     .eq("status", "ativo")
     .order("created_at", { ascending: false });
+
+  console.log("Anuncios encontrados:", anuncios?.length || 0, "Erro:", error?.message || "nenhum");
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
