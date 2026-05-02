@@ -381,6 +381,47 @@ export type Database = {
           }
         ];
       };
+      paginas_conteudo: {
+        Row: {
+          id: string;
+          slug: string;
+          titulo: string;
+          conteudo: string;
+          imagem_url: string | null;
+          meta_descricao: string | null;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          titulo: string;
+          conteudo: string;
+          imagem_url?: string | null;
+          meta_descricao?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          titulo?: string;
+          conteudo?: string;
+          imagem_url?: string | null;
+          meta_descricao?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "paginas_conteudo_updated_by_fkey";
+            columns: ["updated_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {

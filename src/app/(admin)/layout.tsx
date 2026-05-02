@@ -43,6 +43,7 @@ export default async function AdminLayout({
               </p>
               {[
                 { href: "/admin/dashboard", label: "Dashboard" },
+                { href: "/admin/paginas", label: "Páginas" },
                 { href: "/admin/blog", label: "Blog" },
                 { href: "/admin/downloads", label: "Downloads" },
                 { href: "/admin/rifas", label: "Rifas" },
