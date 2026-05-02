@@ -26,11 +26,17 @@ export default async function AdminDashboardPage() {
     .select("*", { count: "exact", head: true })
     .eq("status", "approved");
 
+  const { count: bazarCount } = await supabase
+    .from("bazar_anuncios")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "ativo");
+
   const cards = [
     { label: "Posts publicados", value: postsCount ?? 0, color: "from-[#4a7c59] to-[#2d5c3a]" },
     { label: "Downloads", value: downloadsCount ?? 0, color: "from-[#8b5e3c] to-[#5c3d1e]" },
     { label: "Doações aprovadas", value: doacoesCount ?? 0, color: "from-[#d97706] to-[#b45309]" },
     { label: "Rifas ativas", value: rifasCount ?? 0, color: "from-[#7b9ec0] to-[#4a7c80]" },
+    { label: "Anúncios bazar", value: bazarCount ?? 0, color: "from-[#b45309] to-[#8b5e3c]" },
   ];
 
   return (

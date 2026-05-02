@@ -46,6 +46,7 @@ export default async function AdminLayout({
                 { href: "/admin/blog", label: "Blog" },
                 { href: "/admin/downloads", label: "Downloads" },
                 { href: "/admin/rifas", label: "Rifas" },
+                { href: "/admin/bazar", label: "Bazar" },
                 { href: "/admin/doacoes", label: "Doações" },
               ].map((item) => (
                 <Link
