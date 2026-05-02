@@ -325,6 +325,62 @@ export type Database = {
         };
         Relationships: [];
       };
+      bazar_anuncios: {
+        Row: {
+          id: string;
+          titulo: string;
+          descricao: string | null;
+          preco: number;
+          condicao: "novo" | "usado";
+          categoria: string | null;
+          imagens: string[] | null;
+          telefone: string;
+          localizacao: string | null;
+          status: "ativo" | "vendido" | "cancelado";
+          anunciante_id: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          titulo: string;
+          descricao?: string | null;
+          preco: number;
+          condicao: "novo" | "usado";
+          categoria?: string | null;
+          imagens?: string[] | null;
+          telefone: string;
+          localizacao?: string | null;
+          status?: "ativo" | "vendido" | "cancelado";
+          anunciante_id: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          titulo?: string;
+          descricao?: string | null;
+          preco?: number;
+          condicao?: "novo" | "usado";
+          categoria?: string | null;
+          imagens?: string[] | null;
+          telefone?: string;
+          localizacao?: string | null;
+          status?: "ativo" | "vendido" | "cancelado";
+          anunciante_id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "bazar_anuncios_anunciante_id_fkey";
+            columns: ["anunciante_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {

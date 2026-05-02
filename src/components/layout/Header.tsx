@@ -14,6 +14,7 @@ const navLinks = [
   { href: "/orixas", label: "Orixás" },
   { href: "/misterios", label: "Mistérios" },
   { href: "/blog", label: "Blog" },
+  { href: "/bazar", label: "Bazar" },
   { href: "/doacoes", label: "Doações" },
   { href: "/rifas", label: "Rifas" },
 ];
